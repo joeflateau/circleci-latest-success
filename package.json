@@ -1,6 +1,6 @@
 {
   "name": "circleci-latest-success",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "license": "MIT",
   "author": "Joe Flateau",
   "main": "dist/index.js",
