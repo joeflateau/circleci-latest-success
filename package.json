@@ -4,7 +4,6 @@
   "license": "MIT",
   "author": "Joe Flateau",
   "main": "dist/index.js",
-  "module": "dist/circleci-latest-success.esm.js",
   "typings": "dist/index.d.ts",
   "files": [
     "dist",
