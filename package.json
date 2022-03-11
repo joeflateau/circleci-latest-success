@@ -12,11 +12,10 @@
   ],
   "scripts": {
     "analyze": "size-limit --why",
-    "build": "dts build",
+    "build": "tsc",
     "lint": "dts lint",
-    "prepare": "dts build",
+    "prepare": "tsc",
     "size": "size-limit",
-    "start": "dts watch",
     "test": "dts test",
     "release": "release-it"
   },
@@ -24,6 +23,9 @@
     "hooks": {
       "pre-commit": "dts lint"
     }
+  },
+  "bin": {
+    "circleci-latest-success": "./dist/cli.js"
   },
   "prettier": {
     "printWidth": 80,
