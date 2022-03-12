@@ -18,15 +18,20 @@ async function main() {
       }
 
       try {
-        const success = await findSuccessRevision(
+        const lastSuccessRevision = await findSuccessRevision(
           pipeline,
           branch,
           process.env.CIRCLE_API_TOKEN ?? ''
         );
 
-        process.stdout.write(success);
+        if (!lastSuccessRevision) {
+          throw new Error('did not find a successful build');
+        }
+
+        process.stdout.write(lastSuccessRevision);
       } catch (err: any) {
         console.error(err.message);
+        process.exitCode = 1;
       }
     })
     .parseAsync(process.argv);
