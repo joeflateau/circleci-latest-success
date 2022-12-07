@@ -8,32 +8,44 @@ async function main() {
     .option('-v, --verbose', 'verbose output')
     .argument('<buildUrl>')
     .argument('<branch>')
-    .action(async (buildUrl, branch, { verbose }) => {
-      const pipeline = getPipelineFromBuildUrl(buildUrl);
+    .argument('[defaultBase]')
+    .action(
+      async (
+        buildUrl: string,
+        branch: string,
+        defaultBase: string | undefined,
+        { verbose }: { verbose: boolean }
+      ) => {
+        const pipeline = getPipelineFromBuildUrl(buildUrl);
 
-      if (verbose) {
-        Object.entries({ buildUrl, branch, pipeline }).forEach(([key, value]) =>
-          console.error(`${key}: ${value}`)
-        );
-      }
-
-      try {
-        const lastSuccessRevision = await findSuccessRevision(
-          pipeline,
-          branch,
-          process.env.CIRCLE_API_TOKEN ?? ''
-        );
-
-        if (!lastSuccessRevision) {
-          throw new Error('did not find a successful build');
+        if (verbose) {
+          Object.entries({ buildUrl, branch, pipeline }).forEach(
+            ([key, value]) => console.error(`${key}: ${value}`)
+          );
         }
 
-        process.stdout.write(lastSuccessRevision);
-      } catch (err: any) {
-        console.error(err.message);
-        process.exitCode = 1;
+        try {
+          const lastSuccessRevision = await findSuccessRevision(
+            pipeline,
+            branch,
+            process.env.CIRCLE_API_TOKEN ?? ''
+          );
+
+          if (lastSuccessRevision) {
+            process.stdout.write(lastSuccessRevision);
+          } else if (defaultBase) {
+            process.stdout.write(defaultBase);
+          } else {
+            throw new Error(
+              'did not find a successful build and no default was provided'
+            );
+          }
+        } catch (err: any) {
+          console.error(err.message);
+          process.exitCode = 1;
+        }
       }
-    })
+    )
     .parseAsync(process.argv);
 }
 
